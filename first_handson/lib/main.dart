@@ -15,7 +15,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: MyHomePage(),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => MyHomePage(),
+        "/image-detail": (context) => ImageDetail(),
+      },
     );
   }
 }
@@ -25,15 +29,21 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> urls = [
+      "assets/images/image10.jpg",
+      "assets/images/image11.jpg",
+      "assets/images/image13.jpg",
+      "assets/images/image14.jpg",
+      "assets/images/image15.jpg",
+    ];
     return Scaffold(
       appBar: AppBar(title: Text('Image Viwer')),
-      body: ListView(
-        children: [
-          SimpleImage(url: "assets/images/image12.jpg"),
-          SimpleImage(url: "assets/images/image11.jpg"),
-          SimpleImage(url: "assets/images/image13.jpg"),
-          SimpleImage(url: "assets/images/image14.jpg"),
-        ],
+
+      body: ListView.builder(
+        itemCount: urls.length,
+        itemBuilder: (context, idx) {
+          return SimpleImage(url: urls[idx]);
+        },
       ),
     );
   }
@@ -47,18 +57,33 @@ class SimpleImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return Dialog(child: Image.asset(url));
-          },
-        );
+        // showBottomSheet(
+        //   context: context,
+        //   builder: (context) {
+        //     return Container(child: Image.asset(url));
+        //   },
+        // );
+        Navigator.pushNamed(context, '/image-detail', arguments: url);
       },
       child: Container(
         height: 150,
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Image.asset(fit: BoxFit.fitWidth, url),
       ),
+    );
+  }
+}
+
+class ImageDetail extends StatelessWidget {
+  const ImageDetail({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final String imageUrl =
+        ModalRoute.of(context)!.settings.arguments as String;
+    return Scaffold(
+      appBar: AppBar(title: Text('Image Details')),
+      body: Center(child: SimpleImage(url: imageUrl)),
     );
   }
 }
