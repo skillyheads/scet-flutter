@@ -56,21 +56,27 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> images = [
+      'assets/images/image11.jpg',
+      'assets/images/image12.jpg',
+      'assets/images/image13.jpg',
+      'assets/images/image14.jpg',
+      'assets/images/image15.jpg',
+      'assets/images/image16.jpg',
+      'assets/images/image17.jpg',
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal.shade50,
         title: Text('My App'),
       ),
-      body: ListView(
+      body: ListView.builder(
         scrollDirection: Axis.vertical,
-        children: [
-          ImageViewer(url: 'assets/images/image11.jpg'),
-          ImageViewer(url: 'assets/images/image12.jpg'),
-          ImageViewer(url: 'assets/images/image13.jpg'),
-          ImageViewer(url: 'assets/images/image14.jpg'),
-          ImageViewer(url: 'assets/images/image15.jpg'),
-          ImageViewer(url: 'assets/images/image16.jpg'),
-        ],
+        itemCount: images.length,
+        itemBuilder: (context, idx) {
+          return ImageViewer(url: images[idx]);
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
