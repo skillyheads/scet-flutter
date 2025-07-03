@@ -28,10 +28,34 @@ class ImageViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showDialog(
+        showBottomSheet(
+          backgroundColor: Colors.transparent,
           context: context,
           builder: (BuildContext context) {
-            return Dialog(child: Image.asset(url));
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              padding: EdgeInsets.all(25),
+              child: Stack(
+                children: [
+                  Image.asset(url),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.black54,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.close, color: Colors.white, size: 24),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
         );
       },
@@ -83,13 +107,14 @@ class MyHomePage extends StatelessWidget {
         child: Icon(Icons.menu),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      resizeToAvoidBottomInset: false,
       drawer: Drawer(
-        child: Row(
+        child: Column(
           children: [
             DrawerHeader(child: Text('Menu')),
             Text('Menu-Item'),
             SizedBox(height: 15),
-            Text('Menu-Item2', style: TextStyle(fontSize: 30)),
+            Text('Menu-Item2'),
           ],
         ),
       ),
