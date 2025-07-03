@@ -27,10 +27,12 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Image Viwer')),
-      body: Column(
+      body: ListView(
         children: [
           SimpleImage(url: "assets/images/image12.jpg"),
           SimpleImage(url: "assets/images/image11.jpg"),
+          SimpleImage(url: "assets/images/image13.jpg"),
+          SimpleImage(url: "assets/images/image14.jpg"),
         ],
       ),
     );
@@ -43,9 +45,20 @@ class SimpleImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      child: Image.asset(url),
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(child: Image.asset(url));
+          },
+        );
+      },
+      child: Container(
+        height: 150,
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        child: Image.asset(fit: BoxFit.fitWidth, url),
+      ),
     );
   }
 }
