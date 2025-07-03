@@ -15,7 +15,31 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: ImageGalleryScreen(),
+      home: MyHomePage(title: 'Image Viewer'),
+    );
+  }
+}
+
+class ImageViewer extends StatelessWidget {
+  final String url;
+  const ImageViewer({required this.url, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(child: Image.asset(url));
+          },
+        );
+      },
+      child: Container(
+        height: 100,
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Image.asset(fit: BoxFit.fitWidth, url),
+      ),
     );
   }
 }
@@ -37,33 +61,16 @@ class MyHomePage extends StatelessWidget {
         backgroundColor: Colors.teal.shade50,
         title: Text('My App'),
       ),
-      body: Container(
-        height: 500,
-        color: Colors.amber,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Container(
-              child: ElevatedButton(
-                onPressed: () => {},
-                child: Icon(Icons.favorite),
-              ),
-            ),
-            Container(
-              child: ElevatedButton(
-                onPressed: () => {},
-                child: Icon(Icons.favorite),
-              ),
-            ),
-            Container(
-              child: ElevatedButton(
-                onPressed: () => {},
-                child: Icon(Icons.favorite),
-              ),
-            ),
-          ],
-        ),
+      body: ListView(
+        scrollDirection: Axis.vertical,
+        children: [
+          ImageViewer(url: 'assets/images/image11.jpg'),
+          ImageViewer(url: 'assets/images/image12.jpg'),
+          ImageViewer(url: 'assets/images/image13.jpg'),
+          ImageViewer(url: 'assets/images/image14.jpg'),
+          ImageViewer(url: 'assets/images/image15.jpg'),
+          ImageViewer(url: 'assets/images/image16.jpg'),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
