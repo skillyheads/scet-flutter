@@ -1,3 +1,4 @@
+import 'package:first_handson/screens/image_detail.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +16,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: MyHomePage(title: 'Image Viewer'),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => MyHomePage(title: 'Image Viewer'),
+        "/image-detail": (context) => ImageDetails(),
+      },
     );
   }
 }
@@ -28,36 +33,7 @@ class ImageViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showBottomSheet(
-          backgroundColor: Colors.transparent,
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.8,
-              padding: EdgeInsets.all(25),
-              child: Stack(
-                children: [
-                  Image.asset(url),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.close, color: Colors.white, size: 24),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
+        Navigator.pushNamed(context, '/image-detail', arguments: url);
       },
       child: Container(
         height: 100,
