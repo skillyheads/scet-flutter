@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:registrations/models/user.dart';
+import 'package:registrations/services/user_registrations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,17 +28,30 @@ class MyWidget extends StatelessWidget {
   final title;
   @override
   Widget build(BuildContext context) {
+    final UserRegistrations userRegistrations = UserRegistrations();
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: Registration(title: 'User Registration'),
+      body: Column(
+        children: [
+          Registration(
+            title: 'User Registration',
+            registrations: userRegistrations,
+          ),
+          RegisteredUsers(registrations: userRegistrations),
+        ],
+      ),
     );
   }
 }
 
 class Registration extends StatefulWidget {
   final String title;
-  const Registration({required this.title, super.key});
-
+  const Registration({
+    required this.title,
+    super.key,
+    required this.registrations,
+  });
+  final UserRegistrations registrations;
   @override
   State<Registration> createState() => _RegistrationState();
 }
@@ -43,6 +59,8 @@ class Registration extends StatefulWidget {
 class _RegistrationState extends State<Registration> {
   final _formKey = GlobalKey<FormState>();
 
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -57,9 +75,9 @@ class _RegistrationState extends State<Registration> {
                 style: TextStyle(color: Colors.teal, fontSize: 30),
               ),
             ),
+            SizedBox(height: 20),
             TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              obscureText: true,
+              obscureText: false,
               decoration: InputDecoration(
                 labelText: 'Name',
                 border: OutlineInputBorder(),
@@ -70,19 +88,62 @@ class _RegistrationState extends State<Registration> {
                 }
                 return null;
               },
+              controller: _nameController,
             ),
+            SizedBox(height: 20),
+            TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              obscureText: false,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value!.length < 3) {
+                  return "Email should atleast have 3 characters";
+                }
+                return null;
+              },
+              controller: _emailController,
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(SnackBar(content: Text('Form is valid!')));
+                  User user = User();
+                  user.name = _nameController.text;
+                  user.email = _emailController.text;
+                  widget.registrations.addUser(user);
                 }
               },
               child: Text('Submit'),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class RegisteredUsers extends StatelessWidget {
+  final UserRegistrations registrations;
+  const RegisteredUsers({required this.registrations, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: registrations.users.length,
+        itemBuilder: (context, index) {
+          User user = registrations.users[index];
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: Column(children: [Text(user.name), Text(user.email)]),
+          );
+        },
       ),
     );
   }
