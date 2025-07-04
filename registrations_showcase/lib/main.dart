@@ -53,8 +53,27 @@ class RegistrationForm extends StatefulWidget {
 }
 
 class _RegistrationFormState extends State<RegistrationForm> {
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text('Here comes the form'));
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Name',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value!.length < 3) {
+                return "Name should atleast have 3 characters";
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
