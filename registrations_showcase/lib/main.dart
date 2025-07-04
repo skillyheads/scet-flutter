@@ -54,6 +54,8 @@ class RegistrationForm extends StatefulWidget {
 
 class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,26 +65,41 @@ class _RegistrationFormState extends State<RegistrationForm> {
         child: Column(
           children: [
             TextFormField(
-              keyboardType: TextInputType.text,
-              obscureText: false,
+              controller: _nameController,
               decoration: InputDecoration(
-                labelText: 'Name',
-                border: UnderlineInputBorder(),
+                label: Text('Name'),
+                border: OutlineInputBorder(),
               ),
               validator: (value) {
-                if (value!.length < 3) {
-                  return "Name should atleast have 3 characters";
+                if (value == null || value.length < 5) {
+                  return "Name can't be smaller than 5 characters";
                 }
                 return null;
               },
             ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                label: Text('Email'),
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.length < 5) {
+                  return "Email can't be smaller than 5 characters";
+                }
+                return null;
+              },
+            ),
+
             ElevatedButton(
               onPressed: () {
                 bool isValid = _formKey.currentState!.validate();
                 if (isValid) {
+                  String data = _emailController.text;
                   ScaffoldMessenger.of(
                     context,
-                  ).showSnackBar(SnackBar(content: Text('Form is valid!')));
+                  ).showSnackBar(SnackBar(content: Text(data)));
                 }
               },
               child: Text('Register'),
