@@ -56,23 +56,27 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: 'Name',
-              border: OutlineInputBorder(),
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value!.length < 3) {
+                  return "Name should atleast have 3 characters";
+                }
+                return null;
+              },
             ),
-            validator: (value) {
-              if (value!.length < 3) {
-                return "Name should atleast have 3 characters";
-              }
-              return null;
-            },
-          ),
-        ],
+            ElevatedButton(onPressed: () => {}, child: Text('Register')),
+          ],
+        ),
       ),
     );
   }
