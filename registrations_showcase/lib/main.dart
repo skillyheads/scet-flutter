@@ -63,9 +63,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
         child: Column(
           children: [
             TextFormField(
+              keyboardType: TextInputType.text,
+              obscureText: false,
               decoration: InputDecoration(
                 labelText: 'Name',
-                border: OutlineInputBorder(),
+                border: UnderlineInputBorder(),
               ),
               validator: (value) {
                 if (value!.length < 3) {
@@ -74,7 +76,17 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 return null;
               },
             ),
-            ElevatedButton(onPressed: () => {}, child: Text('Register')),
+            ElevatedButton(
+              onPressed: () {
+                bool isValid = _formKey.currentState!.validate();
+                if (isValid) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Form is valid!')));
+                }
+              },
+              child: Text('Register'),
+            ),
           ],
         ),
       ),
