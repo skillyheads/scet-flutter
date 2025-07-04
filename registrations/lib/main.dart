@@ -23,19 +23,30 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyWidget extends StatelessWidget {
+class MyWidget extends StatefulWidget {
   const MyWidget({required this.title, super.key});
   final title;
+
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  final UserRegistrations userRegistrations = UserRegistrations();
+  void _registrationSuccess() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    final UserRegistrations userRegistrations = UserRegistrations();
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(widget.title)),
       body: Column(
         children: [
           Registration(
             title: 'User Registration',
             registrations: userRegistrations,
+            onSuccess: _registrationSuccess,
           ),
           RegisteredUsers(registrations: userRegistrations),
         ],
@@ -50,8 +61,10 @@ class Registration extends StatefulWidget {
     required this.title,
     super.key,
     required this.registrations,
+    required this.onSuccess,
   });
   final UserRegistrations registrations;
+  final VoidCallback onSuccess;
   @override
   State<Registration> createState() => _RegistrationState();
 }
@@ -117,6 +130,7 @@ class _RegistrationState extends State<Registration> {
                   user.name = _nameController.text;
                   user.email = _emailController.text;
                   widget.registrations.addUser(user);
+                  widget.onSuccess();
                 }
               },
               child: Text('Submit'),
@@ -141,7 +155,28 @@ class RegisteredUsers extends StatelessWidget {
           User user = registrations.users[index];
           return Container(
             margin: EdgeInsets.symmetric(vertical: 10),
-            child: Column(children: [Text(user.name), Text(user.email)]),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2),
+                      borderRadius: BorderRadius.circular(50),
+                      color: Colors.teal,
+                    ),
+                    height: 50,
+                    width: 50,
+                    child: Center(child: Text(user.email[0].toUpperCase())),
+                  ),
+                  SizedBox(width: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Text(user.name), Text(user.email)],
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
