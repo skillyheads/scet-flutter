@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
       ),
       home: const MyWidget(title: 'Registrations'),
     );
@@ -58,6 +58,8 @@ class _RegistrationState extends State<Registration> {
               ),
             ),
             TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Name',
                 border: OutlineInputBorder(),
@@ -68,6 +70,16 @@ class _RegistrationState extends State<Registration> {
                 }
                 return null;
               },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Form is valid!')));
+                }
+              },
+              child: Text('Submit'),
             ),
           ],
         ),
