@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:registrations/models/user.dart';
-import 'package:registrations/services/user_registrations.dart';
+import 'package:registrations_refresh/models/user.dart';
+import 'package:registrations_refresh/services/user_registrations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -125,9 +125,10 @@ class _RegistrationState extends State<Registration> {
               children: [
                 RadioListTile(
                   title: Text('Male'),
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
                   value: 'Male',
                   groupValue: _gender,
-                  contentPadding: EdgeInsets.all(3),
                   onChanged: (String? value) {
                     setState(() {
                       _gender = value!;
@@ -137,6 +138,8 @@ class _RegistrationState extends State<Registration> {
                 RadioListTile(
                   title: Text('Female'),
                   value: 'Female',
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
                   groupValue: _gender,
                   onChanged: (String? value) {
                     setState(() {
@@ -147,6 +150,8 @@ class _RegistrationState extends State<Registration> {
                 RadioListTile(
                   title: Text('Neutral'),
                   value: 'Neutral',
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
                   groupValue: _gender,
                   onChanged: (String? value) {
                     setState(() {
@@ -166,6 +171,7 @@ class _RegistrationState extends State<Registration> {
                   User user = User();
                   user.name = _nameController.text;
                   user.email = _emailController.text;
+                  user.gender = _gender;
                   widget.registrations.addUser(user);
                   widget.onSuccess();
                 }
@@ -200,7 +206,9 @@ class RegisteredUsers extends StatelessWidget {
                     decoration: BoxDecoration(
                       border: Border.all(width: 2),
                       borderRadius: BorderRadius.circular(50),
-                      color: Colors.teal,
+                      color: user.gender == 'Female'
+                          ? Colors.pink
+                          : Colors.teal,
                     ),
                     height: 50,
                     width: 50,
