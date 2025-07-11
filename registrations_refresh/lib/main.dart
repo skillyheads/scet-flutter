@@ -123,41 +123,50 @@ class _RegistrationState extends State<Registration> {
             SizedBox(height: 20),
             Column(
               children: [
-                RadioListTile(
-                  title: Text('Male'),
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  value: 'Male',
-                  groupValue: _gender,
-                  onChanged: (String? value) {
-                    setState(() {
-                      _gender = value!;
-                    });
-                  },
+                Container(
+                  margin: EdgeInsets.all(3),
+                  child: RadioListTile(
+                    title: Text('Male'),
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    value: 'Male',
+                    groupValue: _gender,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _gender = value!;
+                      });
+                    },
+                  ),
                 ),
-                RadioListTile(
-                  title: Text('Female'),
-                  value: 'Female',
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  groupValue: _gender,
-                  onChanged: (String? value) {
-                    setState(() {
-                      _gender = value!;
-                    });
-                  },
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 2),
+                  child: RadioListTile(
+                    title: Text('Female'),
+                    value: 'Female',
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    groupValue: _gender,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _gender = value!;
+                      });
+                    },
+                  ),
                 ),
-                RadioListTile(
-                  title: Text('Neutral'),
-                  value: 'Neutral',
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  groupValue: _gender,
-                  onChanged: (String? value) {
-                    setState(() {
-                      _gender = value!;
-                    });
-                  },
+                Container(
+                  margin: EdgeInsets.all(3),
+                  child: RadioListTile(
+                    title: Text('Neutral'),
+                    value: 'Neutral',
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    groupValue: _gender,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _gender = value!;
+                      });
+                    },
+                  ),
                 ),
               ],
             ),

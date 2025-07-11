@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:registrations/models/user.dart';
+import 'package:registrations/screens/list_users.dart';
 import 'package:registrations/services/user_registrations.dart';
 
 void main() {
@@ -18,7 +19,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
       ),
-      home: const MyWidget(title: 'Registrations'),
+      //home: const MyWidget(title: 'Registrations'),
+      initialRoute: '/',
+      routes: {
+        "/": (context) => MyWidget(title: 'Registrations'),
+        "/list-users": (context) => ListUsers(),
+      },
     );
   }
 }
@@ -40,7 +46,21 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/list-users',
+                arguments: userRegistrations,
+              );
+            },
+            child: Icon(Icons.list),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Registration(
@@ -75,6 +95,9 @@ class _RegistrationState extends State<Registration> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   String _gender = "Male";
+  String _selectedDept = "NA";
+  List<String> departments = ["CSE", "AIML", "ECE", "IT", "AIDS", "EEE", "NA"];
+  bool _isAgreed = false;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -82,6 +105,7 @@ class _RegistrationState extends State<Registration> {
       child: Container(
         margin: EdgeInsets.all(40),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Align(
               child: Text(
@@ -121,53 +145,86 @@ class _RegistrationState extends State<Registration> {
               controller: _emailController,
             ),
             SizedBox(height: 20),
-            Column(
-              children: [
-                RadioListTile(
-                  title: Text('Male'),
-                  value: 'Male',
-                  groupValue: _gender,
-                  contentPadding: EdgeInsets.all(3),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _gender = value!;
-                    });
-                  },
-                ),
-                RadioListTile(
-                  title: Text('Female'),
-                  value: 'Female',
-                  groupValue: _gender,
-                  onChanged: (String? value) {
-                    setState(() {
-                      _gender = value!;
-                    });
-                  },
-                ),
-                RadioListTile(
-                  title: Text('Neutral'),
-                  value: 'Neutral',
-                  groupValue: _gender,
-                  onChanged: (String? value) {
-                    setState(() {
-                      _gender = value!;
-                    });
-                  },
-                ),
-              ],
+            RadioListTile(
+              title: Text('Male'),
+              value: 'Male',
+              groupValue: _gender,
+              contentPadding: EdgeInsets.all(1),
+              onChanged: (String? value) {
+                setState(() {
+                  _gender = value!;
+                });
+              },
+              activeColor: Colors.cyanAccent.shade400,
+            ),
+            RadioListTile(
+              title: Text('Female'),
+              value: 'Female',
+              groupValue: _gender,
+              contentPadding: EdgeInsets.all(1),
+              onChanged: (String? value) {
+                setState(() {
+                  _gender = value!;
+                });
+              },
+              activeColor: Colors.cyanAccent.shade400,
+            ),
+            RadioListTile(
+              title: Text('Neutral'),
+              value: 'Neutral',
+              groupValue: _gender,
+              contentPadding: EdgeInsets.all(1),
+              onChanged: (String? value) {
+                setState(() {
+                  _gender = value!;
+                });
+              },
+              activeColor: Colors.cyanAccent.shade400,
             ),
             SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              value: _selectedDept,
+              items: [
+                ...departments.map((String dept) {
+                  return DropdownMenuItem<String>(
+                    value: dept,
+                    child: Text(dept),
+                  );
+                }),
+              ],
+              onChanged: (String? selectedDept) {
+                _selectedDept = selectedDept ?? "NA";
+              },
+            ),
+            CheckboxListTile(
+              title: Text('I agree to the terms and conditions'),
+              value: _isAgreed,
+              onChanged: (bool? value) {
+                setState(() {
+                  _isAgreed = value ?? false;
+                });
+              },
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Form is valid!')));
-                  User user = User();
-                  user.name = _nameController.text;
-                  user.email = _emailController.text;
-                  widget.registrations.addUser(user);
-                  widget.onSuccess();
+                  if (_isAgreed) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Form is valid!')));
+                    User user = User();
+                    user.name = _nameController.text;
+                    user.email = _emailController.text;
+                    user.gender = _gender;
+                    user.department = _selectedDept;
+                    widget.registrations.addUser(user);
+                    widget.onSuccess();
+                  } else {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Agree the terms!')));
+                  }
                 }
               },
               child: Text('Submit'),
@@ -191,28 +248,33 @@ class RegisteredUsers extends StatelessWidget {
         itemBuilder: (context, index) {
           User user = registrations.users[index];
           return Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2),
-                      borderRadius: BorderRadius.circular(50),
-                      color: Colors.teal,
-                    ),
-                    height: 50,
-                    width: 50,
-                    child: Center(child: Text(user.email[0].toUpperCase())),
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2),
+                    borderRadius: BorderRadius.circular(50),
+                    color: user.gender == 'Male'
+                        ? Colors.teal
+                        : Colors.pink.shade50,
                   ),
-                  SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(user.name), Text(user.email)],
-                  ),
-                ],
-              ),
+                  height: 50,
+                  width: 50,
+                  child: Center(child: Text(user.email[0].toUpperCase())),
+                ),
+                SizedBox(width: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(user.name),
+                    Text(user.email),
+                    Text(user.department),
+                  ],
+                ),
+              ],
             ),
           );
         },
