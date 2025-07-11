@@ -11,15 +11,114 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // Light theme
+  ThemeData get lightTheme => ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.teal,
+      brightness: Brightness.light,
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.teal,
+      foregroundColor: Colors.white,
+      elevation: 2,
+      titleTextStyle: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.teal, width: 2),
+      ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return Colors.teal;
+        }
+        return null;
+      }),
+    ),
+    radioTheme: RadioThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return Colors.teal;
+        }
+        return null;
+      }),
+    ),
+  );
+
+  // Dark theme
+  ThemeData get darkTheme => ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.teal,
+      brightness: Brightness.dark,
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.teal.shade700,
+      foregroundColor: Colors.white,
+      elevation: 2,
+      titleTextStyle: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.teal.shade600,
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.teal.shade400, width: 2),
+      ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return Colors.teal.shade400;
+        }
+        return null;
+      }),
+    ),
+    radioTheme: RadioThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return Colors.teal.shade400;
+        }
+        return null;
+      }),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
-      ),
-      //home: const MyWidget(title: 'Registrations'),
+      title: 'Flutter Registration Demo',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode
+          .system, // Change to ThemeMode.light or ThemeMode.dark to force a theme
       initialRoute: '/',
       routes: {
         "/": (context) => MyWidget(title: 'Registrations'),
@@ -49,15 +148,15 @@ class _MyWidgetState extends State<MyWidget> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          GestureDetector(
-            onTap: () {
+          IconButton(
+            onPressed: () {
               Navigator.pushNamed(
                 context,
                 '/list-users',
                 arguments: userRegistrations,
               );
             },
-            child: Icon(Icons.list),
+            icon: Icon(Icons.list),
           ),
         ],
       ),
@@ -110,16 +209,16 @@ class _RegistrationState extends State<Registration> {
             Align(
               child: Text(
                 widget.title,
-                style: TextStyle(color: Colors.teal, fontSize: 30),
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             SizedBox(height: 20),
             TextFormField(
               obscureText: false,
-              decoration: InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder(),
-              ),
+              decoration: InputDecoration(labelText: 'Name'),
               validator: (value) {
                 if (value!.length < 3) {
                   return "Name should atleast have 3 characters";
@@ -132,10 +231,7 @@ class _RegistrationState extends State<Registration> {
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               obscureText: false,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
+              decoration: InputDecoration(labelText: 'Email'),
               validator: (value) {
                 if (value!.length < 3) {
                   return "Email should atleast have 3 characters";
@@ -155,7 +251,6 @@ class _RegistrationState extends State<Registration> {
                   _gender = value!;
                 });
               },
-              activeColor: Colors.cyanAccent.shade400,
             ),
             RadioListTile(
               title: Text('Female'),
@@ -167,7 +262,6 @@ class _RegistrationState extends State<Registration> {
                   _gender = value!;
                 });
               },
-              activeColor: Colors.cyanAccent.shade400,
             ),
             RadioListTile(
               title: Text('Neutral'),
@@ -179,11 +273,11 @@ class _RegistrationState extends State<Registration> {
                   _gender = value!;
                 });
               },
-              activeColor: Colors.cyanAccent.shade400,
             ),
             SizedBox(height: 20),
             DropdownButtonFormField<String>(
               value: _selectedDept,
+              decoration: InputDecoration(labelText: 'Department'),
               items: [
                 ...departments.map((String dept) {
                   return DropdownMenuItem<String>(
@@ -249,29 +343,56 @@ class RegisteredUsers extends StatelessWidget {
           User user = registrations.users[index];
           return Container(
             margin: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2),
+                    border: Border.all(
+                      width: 2,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     borderRadius: BorderRadius.circular(50),
                     color: user.gender == 'Male'
-                        ? Colors.teal
-                        : Colors.pink.shade50,
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.secondary,
                   ),
                   height: 50,
                   width: 50,
-                  child: Center(child: Text(user.email[0].toUpperCase())),
+                  child: Center(
+                    child: Text(
+                      user.email[0].toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(width: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(user.name),
-                    Text(user.email),
-                    Text(user.department),
+                    Text(
+                      user.name,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      user.email,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                    ),
+                    Text(
+                      user.department,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
                   ],
                 ),
               ],
