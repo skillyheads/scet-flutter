@@ -44,16 +44,16 @@ class MyApp extends StatelessWidget {
       ),
     ),
     checkboxTheme: CheckboxThemeData(
-      fillColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return Colors.teal;
         }
         return null;
       }),
     ),
     radioTheme: RadioThemeData(
-      fillColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return Colors.teal;
         }
         return null;
@@ -94,16 +94,16 @@ class MyApp extends StatelessWidget {
       ),
     ),
     checkboxTheme: CheckboxThemeData(
-      fillColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return Colors.teal.shade400;
         }
         return null;
       }),
     ),
     radioTheme: RadioThemeData(
-      fillColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return Colors.teal.shade400;
         }
         return null;
@@ -121,23 +121,37 @@ class MyApp extends StatelessWidget {
           .system, // Change to ThemeMode.light or ThemeMode.dark to force a theme
       initialRoute: '/',
       routes: {
-        "/": (context) => MyWidget(title: 'Registrations'),
+        "/": (context) => HomePage(title: 'Registrations'),
         "/list-users": (context) => ListUsers(),
       },
     );
   }
 }
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({required this.title, super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({required this.title, super.key});
   final title;
 
   @override
-  State<MyWidget> createState() => _MyWidgetState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _HomePageState extends State<HomePage> {
   final UserRegistrations userRegistrations = UserRegistrations();
+  bool _isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialUsers();
+  }
+
+  Future<void> _loadInitialUsers() async {
+    await userRegistrations.loadUsers();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   void _registrationSuccess() {
     setState(() {});
   }
@@ -167,7 +181,9 @@ class _MyWidgetState extends State<MyWidget> {
             registrations: userRegistrations,
             onSuccess: _registrationSuccess,
           ),
-          RegisteredUsers(registrations: userRegistrations),
+          _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : RegisteredUsers(registrations: userRegistrations),
         ],
       ),
     );
@@ -332,7 +348,10 @@ class _RegistrationState extends State<Registration> {
 
 class RegisteredUsers extends StatelessWidget {
   final UserRegistrations registrations;
-  const RegisteredUsers({required this.registrations, super.key});
+
+  RegisteredUsers({required this.registrations, super.key}) {
+    registrations.loadUsers();
+  }
 
   @override
   Widget build(BuildContext context) {
