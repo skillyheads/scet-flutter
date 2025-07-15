@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Manual Theme Demo',
-      theme: greenTheme,
+      theme: blueTheme,
       darkTheme: redTheme, // Change this to: redTheme, blueTheme, or greenTheme
       home: MyHomePage(),
     );
@@ -62,7 +62,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(title: Text('Theme Demo')),
       body: Center(
         child: Container(
-          color: Theme.of(context).colorScheme.surface,
+          // color: Theme.of(context).colorScheme.surface,
           child: Text(
             'Hello World!',
             style: Theme.of(context).textTheme.bodyLarge,
